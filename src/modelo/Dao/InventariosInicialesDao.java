@@ -81,14 +81,14 @@ public class InventariosInicialesDao {
 		ResultSet resultado = null;
 		connection = miconexion.getConnection();
 		InventarioInicialVo inventario = new InventarioInicialVo();
-		String consulta = "SELECT * FROM inventariosinicialesdetalle id, inventariosinciales i " + 
+		String consulta = "SELECT * FROM inventariosinicialesdetalle id, inventariosiniciales i " + 
 				"WHERE id.idInventarioInicial = i.id AND (id.barras = '"+codigo+"' OR id.codigo = '"+codigo+"') AND i.id = "+id;
 		statement = connection.prepareStatement(consulta);
 		resultado = statement.executeQuery();
 	
 		if (resultado.next()) {
 			inventario.setBarras(resultado.getString("barras"));
-			inventario.setCantidad(resultado.getDouble("cantidad"));
+			inventario.setCantidad(resultado.getDouble("cantidad"));	
 			inventario.setCodigo(resultado.getString("codigo"));
 			inventario.setCosto(resultado.getDouble("costo"));
 			inventario.setDescripcion(resultado.getString("descripcion"));

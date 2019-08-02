@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -379,7 +380,12 @@ public class Coordinador {
 		iniciarConexion();
 		iniciarConexionFirebird();
 		codigo = miArticulosDao.consultarArticulo(codigo);
-		return miInventariosInicialesDao.consultar(codigo, id);
+		try {
+			return miInventariosInicialesDao.consultar(codigo, id);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public String formatoNumero(Double numero, int d) {
@@ -478,5 +484,35 @@ public class Coordinador {
 
 	public void habilitarOpciones() {
 		miVentana.habilitarOpciones();
+	}
+
+	public void iniciarTransaccion() {
+		try {
+			miConexion.getConnection().setAutoCommit(false);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error "+e);
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void committ() {
+		try {
+			miConexion.getConnection().commit();
+			miConexion.getConnection().setAutoCommit(true);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error "+e);
+			e.printStackTrace();
+		}		
+	}
+	
+	public void rollback() {
+		try {
+			miConexion.getConnection().rollback();
+			miConexion.getConnection().setAutoCommit(true);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Error "+e);
+			e.printStackTrace();
+		}		
 	}
 }

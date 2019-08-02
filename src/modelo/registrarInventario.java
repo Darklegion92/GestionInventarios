@@ -16,25 +16,31 @@ public class registrarInventario {
 	
 	
 	
-	public void guardar(JTable tabla, String inventarioInicial, String nombre) throws SQLException{
+	public void guardar(JTable tabla, String inventarioInicial, String nombre) {
 	    String[] idInventarioIncial = inventarioInicial.split("-");
-	    
-	    int idInventarioNuevo = miCoordinador.guardarInventarioNuevo(idInventarioIncial[0], nombre);
-	    
-	    for (int i = 0; i < tabla.getRowCount(); i++) {
-	      InventarioNuevoVo miInventario = new InventarioNuevoVo();
-	      miInventario.setCantidadAjustada(miCoordinador.StringDouble(tabla.getValueAt(i, 4).toString()));
-	      miInventario.setCantidadInicial(miCoordinador.StringDouble(tabla.getValueAt(i, 2).toString()));
-	      miInventario.setCantidadNueva(miCoordinador.StringDouble(tabla.getValueAt(i, 3).toString()));
-	      miInventario.setCodigo(tabla.getValueAt(i, 0).toString());
-	      miInventario.setCostoUnidad(miCoordinador.StringDouble(tabla.getValueAt(i, 5).toString()));
-	      miInventario.setDescripcion(tabla.getValueAt(i, 1).toString());
-	      miInventario.setIdInventarioNuevo(Integer.valueOf(idInventarioNuevo));
-	      miInventario.setCreado(Boolean.parseBoolean(tabla.getValueAt(i, 7).toString()));
-	      miInventario.setFamilia(tabla.getValueAt(i, 8).toString());
-	      miInventario.setGrupo(tabla.getValueAt(i, 9).toString());
-	      miInventario.setSubgrupo(tabla.getValueAt(i, 10).toString());
-	      miCoordinador.guardarInventario(miInventario);
+	    miCoordinador.iniciarTransaccion();
+	    try {
+		    int idInventarioNuevo = miCoordinador.guardarInventarioNuevo(idInventarioIncial[0], nombre);
+		    
+		    for (int i = 0; i < tabla.getRowCount(); i++) {
+		      InventarioNuevoVo miInventario = new InventarioNuevoVo();
+		      miInventario.setCantidadAjustada(miCoordinador.StringDouble(tabla.getValueAt(i, 4).toString()));
+		      miInventario.setCantidadInicial(miCoordinador.StringDouble(tabla.getValueAt(i, 2).toString()));
+		      miInventario.setCantidadNueva(miCoordinador.StringDouble(tabla.getValueAt(i, 3).toString()));
+		      miInventario.setCodigo(tabla.getValueAt(i, 0).toString());
+		      miInventario.setCostoUnidad(miCoordinador.StringDouble(tabla.getValueAt(i, 5).toString()));
+		      miInventario.setDescripcion(tabla.getValueAt(i, 1).toString());
+		      miInventario.setIdInventarioNuevo(Integer.valueOf(idInventarioNuevo));
+		      miInventario.setCreado(Boolean.parseBoolean(tabla.getValueAt(i, 7).toString()));
+		      miInventario.setFamilia(tabla.getValueAt(i, 8).toString());
+		      miInventario.setGrupo(tabla.getValueAt(i, 9).toString());
+		      miInventario.setSubgrupo(tabla.getValueAt(i, 10).toString());
+		      miCoordinador.guardarInventario(miInventario);
+		    }
+		    miCoordinador.committ();
+	    }catch(SQLException e) {
+	    	miCoordinador.AlertaError("Se Ha Presentado Un Error", "Al Momento de Grabar");
+	    	miCoordinador.rollback();
 	    }
 	  }
 	

@@ -80,6 +80,7 @@ public class progressBar extends SwingWorker<Integer, String>{
 			getJprogress().setMaximum(rows);
 			DataFormatter df = new DataFormatter();
 			miCoordinador.iniciarConexion();
+			miCoordinador.iniciarTransaccion();
 			Integer id = miCoordinador.guardarInventario(nombre);
 			for (int f = 1; f < rows; f++) {
 				fila = hssfSheet.getRow(f);
@@ -103,6 +104,7 @@ public class progressBar extends SwingWorker<Integer, String>{
 				}
 				
 			}
+			miCoordinador.committ();
 			hssfWorkbook.close();
 			txt.setText("<html><font size=4><p align='center'>SE HAN REGISTRADO <span>"+contador+"</span></p><p align='center'>ARTÍCULOS EN ESTE INVENTARIO</p></font></html>");
 			contenedor.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -114,6 +116,7 @@ public class progressBar extends SwingWorker<Integer, String>{
 			btnArchivo.setEnabled(true);
 		}catch(IOException | SQLException e) {
 			JOptionPane.showMessageDialog(null, "error "+e.getMessage());
+			miCoordinador.rollback();
 			e.printStackTrace();
 		}
 		return 0;

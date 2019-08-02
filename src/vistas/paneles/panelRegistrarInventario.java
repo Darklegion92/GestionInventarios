@@ -255,6 +255,7 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 						panelFunciones.add(txtDescripcion);
 						txtDescripcion.setPreferredSize(new Dimension(400, 20));
 						txtDescripcion.setEditable(false);
+						txtDescripcion.addKeyListener(this);
 
 						panelFunciones.add(txtCantidad);
 						txtCantidad.setPreferredSize(new Dimension(150, 20));
@@ -274,9 +275,9 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 					jsTabla.setViewportView(tabla);
 					jsTabla.setBorder(
 							javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-					columnasEditables = new boolean[] { false, false, false, false, false, false, false };
+					columnasEditables = new boolean[] { false, false, false, false, false, false, false,false,false,false,false };
 					columnTypes = new Class[] { String.class, String.class, Double.class, Double.class, Double.class,
-							Double.class, Double.class };
+							Double.class, Double.class,Boolean.class,String.class,String.class,String.class };
 					modelo = new modeloTablasEditable(columnasEditables, columnTypes);
 					modelo.addColumn("CODIGO");
 					modelo.addColumn("DESCRIPCION");
@@ -325,53 +326,53 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-
-		if ((e.getSource() == txtCodigo) && (e.getKeyCode() == 10)) {
-			miCoordinador.iniciarConexion();
-			miCoordinador.iniciarConexionFirebird();
-			String[] id = cbxInventarioIncial.getSelectedItem().toString().split("-");
-			try {
-				miInventario = new InventarioInicialVo();
-				miInventario = miCoordinador.consultar(txtCodigo.getText(), id[0]);
-				if (!miInventario.getBarras().isEmpty()) {
-					txtDescripcion.setEditable(false);
-					txtCodigo.setText(miInventario.getCodigo());
-					txtBarras.setText(miInventario.getBarras());
-					txtDescripcion.setText(miInventario.getDescripcion());
-					txtCantidad.setText("1");
-					familia = miInventario.getFamilia();
-					grupo = miInventario.getGrupo();
-					subgrupo = miInventario.getSubgrupo();
-					if (miInventario.getCosto().doubleValue() < 0.0D) {
+		if (e.getSource() == txtCodigo){ 
+			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				miCoordinador.iniciarConexion();
+				String[] id = cbxInventarioIncial.getSelectedItem().toString().split("-");
+				try {
+					miInventario = new InventarioInicialVo();
+					miInventario = miCoordinador.consultar(txtCodigo.getText(), id[0]);
+					if (!miInventario.getBarras().isEmpty()) {
+						txtDescripcion.setEditable(false);
+						txtCodigo.setText(miInventario.getCodigo());
+						txtBarras.setText(miInventario.getBarras());
+						txtDescripcion.setText(miInventario.getDescripcion());
+						txtCantidad.setText("1");
+						familia = miInventario.getFamilia();
+						grupo = miInventario.getGrupo();
+						subgrupo = miInventario.getSubgrupo();
+						if (miInventario.getCosto().doubleValue() < 0.0D) {
+							miInventario.setCosto(Double.valueOf(0.0D));
+						}
+						txtCosto.setText(miCoordinador.formatoNumero(miInventario.getCosto(), 2));
+						txtCantidad.setEditable(true);
+						txtCantidad.requestFocus();
+						txtCantidad.selectAll();
+						cbxInventarioIncial.setEnabled(false);
+					} else {
+						txtDescripcion.setEditable(true);
+						txtDescripcion.requestFocus();
 						miInventario.setCosto(Double.valueOf(0.0D));
+						miInventario.setCantidad(Double.valueOf(0.0D));
 					}
-					txtCosto.setText(miCoordinador.formatoNumero(miInventario.getCosto(), 2));
-					txtCantidad.setEditable(true);
-					txtCantidad.requestFocus();
-					txtCantidad.selectAll();
-					cbxInventarioIncial.setEnabled(false);
-				} else {
+				} catch (NullPointerException e1) {
+					miCoordinador.AlertaError("Artículo " + txtCodigo.getText(), "No Existe, Digite Una Descripción");
 					txtDescripcion.setEditable(true);
 					txtDescripcion.requestFocus();
 					miInventario.setCosto(Double.valueOf(0.0D));
 					miInventario.setCantidad(Double.valueOf(0.0D));
+					familia = "SIN FAMILIA";
+					grupo = "SIN GRUPO";
+					subgrupo = "SIN SUBGRUPO";
+				} catch (SQLException e2) {
+					ConexionFireBird miConexionFireBird = new ConexionFireBird("clector", "1234");
+					miCoordinador.setMiConexionFireBird(miConexionFireBird);
+					miCoordinador.iniciarConexion();
 				}
-			} catch (NullPointerException e1) {
-				miCoordinador.AlertaError("ArtÃ­culo " + txtCodigo.getText(), "No Existe Escriba Una DescripciÃ³n");
-				txtDescripcion.setEditable(true);
-				txtDescripcion.requestFocus();
-				miInventario.setCosto(Double.valueOf(0.0D));
-				miInventario.setCantidad(Double.valueOf(0.0D));
-				familia = "SIN FAMILIA";
-				grupo = "SIN GRUPO";
-				subgrupo = "SIN SUBGRUPO";
-			} catch (SQLException e2) {
-				ConexionFireBird miConexionFireBird = new ConexionFireBird("clector", "1234");
-				miCoordinador.setMiConexionFireBird(miConexionFireBird);
-				miCoordinador.iniciarConexion();
 			}
 		}
-		if ((e.getSource() == txtCantidad) && (e.getKeyCode() == 10)) {
+		if ((e.getSource() == txtCantidad) && (e.getKeyCode() == KeyEvent.VK_ENTER)) {
 			int i = miCoordinador.validarCodigo(tabla, txtCodigo.getText());
 			System.err.println(i);
 			if (i >= 1) {
@@ -384,12 +385,23 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 			crear = false;
 		}
 
-		if ((e.getSource() == txtDescripcion) && (e.getKeyCode() == 10)) {
-			txtCosto.setText("0");
-			txtCantidad.requestFocus();
-			txtCantidad.setEditable(true);
-			txtDescripcion.setEditable(false);
-			crear = true;
+		if (e.getSource() == txtDescripcion) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				txtCosto.setText("0");
+				txtCantidad.requestFocus();
+				txtCantidad.setEditable(true);
+				txtDescripcion.setEditable(false);
+				crear = true;
+				}
+		}
+		
+		if (e.getSource() == txtNombre) { 
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					System.err.println("ingresa");
+					if(!txtNombre.getText().isEmpty()) {
+						txtCosto.requestFocus();
+					}
+			}
 		}
 
 	}
@@ -440,7 +452,7 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 		}
 
 		if ((e.getSource() == btnCancelar)
-				&& (miCoordinador.AlertaConfirmar("Se Borraran Todos Los Datos", "Â¿Estas Seguro?"))) {
+				&& (miCoordinador.AlertaConfirmar("Se Borraran Todos Los Datos", "¿Estas Seguro?"))) {
 			miCoordinador.cerrarPestaña();
 		}
 
