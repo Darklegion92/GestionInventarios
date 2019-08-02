@@ -4,10 +4,13 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
@@ -57,58 +60,62 @@ public class progressBar extends SwingWorker<Integer, String>{
 	}
 
 	@Override
-	protected Integer doInBackground() throws Exception {
+	protected Integer doInBackground() {
 		contenedor.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		btnCargar.setEnabled(false);
 		txtNombre.setEnabled(false);
 		btnArchivo.setEnabled(false);
-		
-		//Proceso
-		InputStream excelStream = null;
-
-		excelStream = new FileInputStream(new File(ruta));
-		XSSFWorkbook hssfWorkbook = new XSSFWorkbook(excelStream);
-		XSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
-		XSSFRow fila;
-		
-		int rows = hssfSheet.getLastRowNum();
-
-		int  contador = 0;
-		getJprogress().setMaximum(rows);
-		DataFormatter df = new DataFormatter();
-		miCoordinador.iniciarConexion();
-		Integer id = miCoordinador.guardarInventario(nombre);
-		for (int f = 1; f < rows; f++) {
-			fila = hssfSheet.getRow(f);
-			final int c = f+1;
-			getJprogress().setValue(c);
-			InventarioInicialVo inventario = new InventarioInicialVo();
-			if (fila == null) {
-				break;
-			} else {
-				inventario.setBarras(df.formatCellValue(fila.getCell(24)).replaceAll("'", ""));
-				inventario.setCantidad(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(3))));
-				inventario.setCodigo(df.formatCellValue(fila.getCell(0)).replaceAll("'", ""));
-				inventario.setCosto(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(5))));
-				inventario.setDescripcion(df.formatCellValue(fila.getCell(1)).replaceAll("'", ""));
-				inventario.setIdInventarioInicial(id);
-				inventario.setFamilia(df.formatCellValue(fila.getCell(27)).replaceAll("'", ""));
-				inventario.setGrupo(df.formatCellValue(fila.getCell(28)).replaceAll("'", ""));
-				inventario.setSubgrupo(df.formatCellValue(fila.getCell(29)).replaceAll("'", ""));
-				miCoordinador.guardarInventario(inventario);
-				contador ++;
-			}
+		try {
+			//Proceso
+			InputStream excelStream = null;
+	
+			excelStream = new FileInputStream(new File(ruta));
+			XSSFWorkbook hssfWorkbook = new XSSFWorkbook(excelStream);
+			XSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
+			XSSFRow fila;
 			
+			int rows = hssfSheet.getLastRowNum();
+	
+			int  contador = 0;
+			getJprogress().setMaximum(rows);
+			DataFormatter df = new DataFormatter();
+			miCoordinador.iniciarConexion();
+			Integer id = miCoordinador.guardarInventario(nombre);
+			for (int f = 1; f < rows; f++) {
+				fila = hssfSheet.getRow(f);
+				final int c = f+1;
+				getJprogress().setValue(c);
+				InventarioInicialVo inventario = new InventarioInicialVo();
+				if (fila == null) {
+					break;
+				} else {
+					inventario.setBarras(df.formatCellValue(fila.getCell(24)).replaceAll("'", ""));
+					inventario.setCantidad(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(3))));
+					inventario.setCodigo(df.formatCellValue(fila.getCell(0)).replaceAll("'", ""));
+					inventario.setCosto(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(5))));
+					inventario.setDescripcion(df.formatCellValue(fila.getCell(1)).replaceAll("'", ""));
+					inventario.setIdInventarioInicial(id);
+					inventario.setFamilia(df.formatCellValue(fila.getCell(27)).replaceAll("'", ""));
+					inventario.setGrupo(df.formatCellValue(fila.getCell(28)).replaceAll("'", ""));
+					inventario.setSubgrupo(df.formatCellValue(fila.getCell(29)).replaceAll("'", ""));
+					miCoordinador.guardarInventario(inventario);
+					contador ++;
+				}
+				
+			}
+			hssfWorkbook.close();
+			txt.setText("<html><font size=4><p align='center'>SE HAN REGISTRADO <span>"+contador+"</span></p><p align='center'>ARTÍCULOS EN ESTE INVENTARIO</p></font></html>");
+			contenedor.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			miCoordinador.AlertaCorrecto("Inventario Inicial", "Subido Correctamente");
+			txtNombre.setText("");
+			lblRuta.setText("");
+			btnCargar.setEnabled(true);
+			txtNombre.setEnabled(true);
+			btnArchivo.setEnabled(true);
+		}catch(IOException | SQLException e) {
+			JOptionPane.showMessageDialog(null, "error "+e.getMessage());
+			e.printStackTrace();
 		}
-		hssfWorkbook.close();
-		txt.setText("<html><font size=4><p align='center'>SE HAN REGISTRADO <span>"+contador+"</span></p><p align='center'>ARTÍCULOS EN ESTE INVENTARIO</p></font></html>");
-		contenedor.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		miCoordinador.AlertaCorrecto("Inventario Inicial", "Subido Correctamente");
-		txtNombre.setText("");
-		lblRuta.setText("");
-		btnCargar.setEnabled(true);
-		txtNombre.setEnabled(true);
-		btnArchivo.setEnabled(true);
 		return 0;
 	}
 

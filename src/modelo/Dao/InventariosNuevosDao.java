@@ -38,8 +38,8 @@ public class InventariosNuevosDao {
 		Conexion miconexion = miCoordinador.getMiConexion();
 		PreparedStatement statement = null;
 		connection = miconexion.getConnection();
-		String consulta = "INSERT INTO inventariosnuevosdetalle(idInventarioNuevo,codigo,descripcion,cantidadInicial,cantidadNueva,cantidadAjustada,costoUnidad) "
-				+ "VALUES("+invNuevo.getIdInventarioNuevo()+",'"+invNuevo.getCodigo()+"','"+invNuevo.getDescripcion()+"',"+invNuevo.getCantidadInicial()+","+invNuevo.getCantidadNueva()+","+invNuevo.getCantidadAjustada()+","+invNuevo.getCostoUnidad()+")";
+		String consulta = "INSERT INTO inventariosnuevosdetalle(idInventarioNuevo,codigo,descripcion,familia,grupo,subgrupo,cantidadInicial,cantidadNueva,cantidadAjustada,costoUnidad,estado) "
+				+ "VALUES("+invNuevo.getIdInventarioNuevo()+",'"+invNuevo.getCodigo()+"','"+invNuevo.getDescripcion()+"','"+invNuevo.getFamilia()+"','"+invNuevo.getGrupo()+"','"+invNuevo.getSubgrupo()+"',"+invNuevo.getCantidadInicial()+","+invNuevo.getCantidadNueva()+","+invNuevo.getCantidadAjustada()+","+invNuevo.getCostoUnidad()+","+invNuevo.isCreado()+")";
 		statement = connection.prepareStatement(consulta);
 		statement.execute();
 	}

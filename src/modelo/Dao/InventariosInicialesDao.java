@@ -41,8 +41,8 @@ public class InventariosInicialesDao {
 		Conexion miconexion = miCoordinador.getMiConexion();
 		PreparedStatement statement = null;
 		connection = miconexion.getConnection();
-		String consulta = "INSERT INTO inventariosinicialesdetalle(idInventarioInicial,codigo,barras,descripcion,cantidad,costo)"
-				+ "VALUES("+invInicial.getIdInventarioInicial()+",'"+invInicial.getCodigo()+"','"+invInicial.getBarras()+"','"+invInicial.getDescripcion()+"',"+invInicial.getCantidad()+","+invInicial.getCosto()+")";
+		String consulta = "INSERT INTO inventariosinicialesdetalle(idInventarioInicial,codigo,barras,familia,grupo,subgrupo,descripcion,cantidad,costo)"
+				+ "VALUES("+invInicial.getIdInventarioInicial()+",'"+invInicial.getCodigo()+"','"+invInicial.getBarras()+"','"+invInicial.getFamilia()+"','"+invInicial.getGrupo()+"','"+invInicial.getSubgrupo()+"','"+invInicial.getDescripcion()+"',"+invInicial.getCantidad()+","+invInicial.getCosto()+")";
 		statement = connection.prepareStatement(consulta);
 		statement.execute();
 	}
@@ -92,6 +92,9 @@ public class InventariosInicialesDao {
 			inventario.setCodigo(resultado.getString("codigo"));
 			inventario.setCosto(resultado.getDouble("costo"));
 			inventario.setDescripcion(resultado.getString("descripcion"));
+			inventario.setFamilia(resultado.getString("familia"));
+			inventario.setGrupo(resultado.getString("grupo"));
+			inventario.setSubgrupo(resultado.getString("subgrupo"));
 			inventario.setId(resultado.getInt("id"));
 			inventario.setIdInventarioInicial(resultado.getInt("idInventarioInicial"));
 		}

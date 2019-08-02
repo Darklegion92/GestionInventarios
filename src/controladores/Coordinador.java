@@ -247,7 +247,9 @@ public class Coordinador {
 	public void crearPestanaCargarInventario(JTabbedPane gestorVentanas) {
 		gestorVentanas.setVisible(true);
 		miPanelCargarInventario = new panelCargarInventario(this);
-		gestorVentanas.addTab("Nuevo Inventario",new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelCargarInventario,"Inventarios");
+		gestorVentanas.addTab("Nuevo Inventario",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelCargarInventario,
+				"Inventarios");
 		gestorVentanas.setSelectedComponent(miPanelCargarInventario);
 	}
 
@@ -327,8 +329,7 @@ public class Coordinador {
 	}
 
 	public void almacenarArchivo(JProgressBar pEstado, JLabel progreso, String ruta, String nombre, JLabel lblRuta,
-			Container container, JTextField txtNombre, JButton btnCargar, JButton btnArchivo)
-			throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException {
+			Container container, JTextField txtNombre, JButton btnCargar, JButton btnArchivo) throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException {
 		miCargarInventario.almacenarArchivo(pEstado, progreso, ruta, nombre, lblRuta, container, txtNombre, btnCargar,
 				btnArchivo);
 	}

@@ -179,14 +179,13 @@ public class panelCargarInventario extends JPanel implements ActionListener, Key
 
 		if (e.getSource() == btnCargar) {
 			if (txtNombre.getText().isEmpty()) {
-		        miCoordinador.AlertaError("El Campo Nombre", "No Puede Estar VacÃ­o");
+		        miCoordinador.AlertaError("El Campo Nombre", "No Puede Estar Vacío");
 		        txtNombre.requestFocus();
 		      }
-		      else if (miCoordinador.AlertaConfirmar("Esta Seguro Que Desea", "Crear Inventario ")){
+		      else if (miCoordinador.AlertaConfirmar("Esta Seguro Que Desea", "¿Cargar Inventario?")){
 		        try {
 		          miCoordinador.almacenarArchivo(pEstado, lblProgreso, lblRuta.getText(), txtNombre.getText(), lblRuta, this, txtNombre, btnCargar, btnArchivo);
-		        }
-		        catch (Exception e1){
+				}   catch (Exception e1){
 		          JOptionPane.showMessageDialog(this, e1.getMessage());
 		          setCursor(new Cursor(0));
 		        }
