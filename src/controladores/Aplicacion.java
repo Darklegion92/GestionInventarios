@@ -50,7 +50,7 @@ public class Aplicacion {
 //////////////Inicia la Aplicacion////////////////////////////////////////
 		
 		miVentana.setVisible(true);
-		miVentanaSplash.setVisible(true);
+		//miVentanaSplash.setVisible(true);
 		
 	}
 }

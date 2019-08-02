@@ -1,6 +1,7 @@
 package controladores;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
@@ -8,8 +9,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -17,19 +20,23 @@ import javax.swing.JTextField;
 import org.apache.poi.EncryptedDocumentException;
 
 import modelo.cargarInventario;
+import modelo.consolidarExportar;
 import modelo.exportarInventario;
 import modelo.registrarInventario;
+import modelo.Dao.ArticulosDao;
 import modelo.Dao.InventariosInicialesDao;
 import modelo.Dao.InventariosNuevosDao;
 import modelo.Vo.InventarioConsolidadoVo;
 import modelo.Vo.InventarioInicialVo;
 import modelo.Vo.InventarioNuevoVo;
 import modelo.conexiones.Conexion;
+import modelo.conexiones.ConexionFireBird;
 import modelo.funciones.Funciones;
 import vistas.VentanaPrincipal;
 import vistas.VentanaSplash;
 import vistas.alertas.VentanaAlerta;
 import vistas.paneles.panelCargarInventario;
+import vistas.paneles.panelConsolidarExportar;
 import vistas.paneles.panelExportarInventario;
 import vistas.paneles.panelRegistrarInventario;;
 
@@ -38,22 +45,60 @@ public class Coordinador {
 	private VentanaSplash miVentanaSplash;
 	private VentanaPrincipal miVentana;
 	private VentanaAlerta miVentanaAlerta;
-	
+
 	private panelCargarInventario miPanelCargarInventario;
 	private panelRegistrarInventario miPanelRegistrarInventario;
 	private panelExportarInventario miPanelExportarInventario;
-	
+	private panelConsolidarExportar miPanelConsolidarExportar;
+
 	private cargarInventario miCargarInventario;
 	private registrarInventario miRegistrarInventario;
 	private exportarInventario miExportarInventario;
+	private consolidarExportar miConsolidarExportar;
+
 	private Funciones misFunciones;
 	private Conexion miConexion;
+	private ConexionFireBird miConexionFireBird;
 	private InventariosInicialesDao miInventariosInicialesDao;
 	private InventariosNuevosDao miInventariosNuevosDao;
-	
+	private ArticulosDao miArticulosDao;
+
 ///////////////////Getters And Setters De Ventanas////////////////////
+
 	public VentanaAlerta getMiVentanaAlerta() {
 		return miVentanaAlerta;
+	}
+
+	public panelConsolidarExportar getMiPanelConsolidarExportar() {
+		return miPanelConsolidarExportar;
+	}
+
+	public void setMiPanelConsolidarExportar(panelConsolidarExportar miPanelConsolidarExportar) {
+		this.miPanelConsolidarExportar = miPanelConsolidarExportar;
+	}
+
+	public consolidarExportar getMiConsolidarExportar() {
+		return miConsolidarExportar;
+	}
+
+	public void setMiConsolidarExportar(consolidarExportar miConsolidarExportar) {
+		this.miConsolidarExportar = miConsolidarExportar;
+	}
+
+	public ConexionFireBird getMiConexionFireBird() {
+		return miConexionFireBird;
+	}
+
+	public void setMiConexionFireBird(ConexionFireBird miConexionFireBird) {
+		this.miConexionFireBird = miConexionFireBird;
+	}
+
+	public ArticulosDao getMiArticulosDao() {
+		return miArticulosDao;
+	}
+
+	public void setMiArticulosDao(ArticulosDao miArticulosDao) {
+		this.miArticulosDao = miArticulosDao;
 	}
 
 	public exportarInventario getMiExportarInventario() {
@@ -160,77 +205,132 @@ public class Coordinador {
 
 	public boolean AlertaSalir(String mensaje1, String mensaje2) {
 		miVentanaAlerta = new VentanaAlerta(miVentana, true);
-		miVentanaAlerta.crearMensaje("ADVERTENCIA","<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 2);
+		miVentanaAlerta.crearMensaje("ADVERTENCIA",
+				"<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 2);
 		miVentanaAlerta.setVisible(true);
-		while(miVentanaAlerta.isVisible()) {
-			///////Mientras se espera respuesta
+		while (miVentanaAlerta.isVisible()) {
+			/////// Mientras se espera respuesta
 		}
 		return miVentanaAlerta.isRespuesta();
 	}
-	
+
 	public boolean AlertaConfirmar(String mensaje1, String mensaje2) {
 		miVentanaAlerta = new VentanaAlerta(miVentana, true);
-		miVentanaAlerta.crearMensaje("CORRECTO","<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 2);
+		miVentanaAlerta.crearMensaje("CORRECTO",
+				"<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 2);
 		miVentanaAlerta.setVisible(true);
-		while(miVentanaAlerta.isVisible()) {
-			///////Mientras se espera respuesta
+		while (miVentanaAlerta.isVisible()) {
+			/////// Mientras se espera respuesta
 		}
 		return miVentanaAlerta.isRespuesta();
 	}
-	
+
 	public void AlertaError(String mensaje1, String mensaje2) {
 		miVentanaAlerta = new VentanaAlerta(miVentana, true);
-		miVentanaAlerta.crearMensaje("ERROR","<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 1);
+		miVentanaAlerta.crearMensaje("ERROR",
+				"<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 1);
 		miVentanaAlerta.setVisible(true);
 	}
-	
+
 	public void AlertaCorrecto(String mensaje1, String mensaje2) {
 		miVentanaAlerta = new VentanaAlerta(miVentana, true);
 		miVentanaAlerta.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		miVentanaAlerta.crearMensaje("CORRECTO","<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 1);
+		miVentanaAlerta.crearMensaje("CORRECTO",
+				"<html><p align='center'>" + mensaje1 + "</p><p align='center'>" + mensaje2 + "</p></html>", 1);
 		miVentanaAlerta.setVisible(true);
 		miVentanaAlerta.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
-	
+
 	/**
 	 * metodo para abrir nueva pestaña del tipo Agrupaciones
 	 */
 	public void crearPestanaCargarInventario(JTabbedPane gestorVentanas) {
 		gestorVentanas.setVisible(true);
-		miPanelCargarInventario = new panelCargarInventario(this,gestorVentanas);
-		gestorVentanas.addTab("Nuevo Inventario",new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")),miPanelCargarInventario,"Inventarios");
+		miPanelCargarInventario = new panelCargarInventario(this);
+		gestorVentanas.addTab("Nuevo Inventario",new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelCargarInventario,"Inventarios");
 		gestorVentanas.setSelectedComponent(miPanelCargarInventario);
 	}
-	
+
 	public void crearPestanaExportarInventario(JTabbedPane gestorVentanas) {
 		iniciarConexion();
 		gestorVentanas.setVisible(true);
-		miPanelExportarInventario= new panelExportarInventario(this);
-		gestorVentanas.addTab("Exportar Inventario",new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")),miPanelExportarInventario,"Inventarios");
+		miPanelExportarInventario = new panelExportarInventario(this);
+		gestorVentanas.addTab("Exportar Inventario",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelExportarInventario,
+				"Inventarios");
 		gestorVentanas.setSelectedComponent(miPanelExportarInventario);
-		
+
 	}
-	
+
+	public void crearPestanaExportarInventarioInd(JTabbedPane gestorVentanas) {
+		iniciarConexion();
+		gestorVentanas.setVisible(true);
+		miPanelExportarInventario = new panelExportarInventario(true, this);
+		gestorVentanas.addTab("Exportar Inventario Individual",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelExportarInventario,
+				"Inventarios");
+		gestorVentanas.setSelectedComponent(miPanelExportarInventario);
+	}
+
 	public void crearPestanaNuevoInventario(JTabbedPane gestorVentanas) {
 		iniciarConexion();
 		gestorVentanas.setVisible(true);
 		miPanelRegistrarInventario = new panelRegistrarInventario(this);
-		gestorVentanas.addTab("Importar Inventario",new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")),miPanelRegistrarInventario,"Inventarios");
+		gestorVentanas.addTab("Importar Inventario",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelRegistrarInventario,
+				"Inventarios");
 		gestorVentanas.setSelectedComponent(miPanelRegistrarInventario);
-		
+
 	}
-	
+
+	public void crearPrestañaConsultarConsolidado(String[] inventarioIncial) {
+		iniciarConexion();
+		miVentana.getGestorVentanas().setVisible(true);
+		miPanelRegistrarInventario = new panelRegistrarInventario(this, inventarioIncial, 1);
+		miVentana.getGestorVentanas().addTab("Consultar Consolidado",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelRegistrarInventario,
+				"Inventarios");
+		miVentana.getGestorVentanas().setSelectedComponent(miPanelRegistrarInventario);
+	}
+
+	public void crearPrestañaConsultarIndividual(String[] inventarioIncial) {
+		iniciarConexion();
+		miVentana.getGestorVentanas().setVisible(true);
+		miPanelRegistrarInventario = new panelRegistrarInventario(this, inventarioIncial, 2);
+		miVentana.getGestorVentanas().addTab("Consultar Individual",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelRegistrarInventario,
+				"Inventarios");
+		miVentana.getGestorVentanas().setSelectedComponent(miPanelRegistrarInventario);
+	}
+
+	public void crearPestanaConsolidarExportar(JTabbedPane gestorVentanas) {
+		iniciarConexion();
+		gestorVentanas.setVisible(true);
+		miPanelConsolidarExportar = new panelConsolidarExportar(this);
+		gestorVentanas.addTab("Consolidar y Exportar",
+				new ImageIcon(getClass().getResource("/recursos/img/iconoInventarios.png")), miPanelConsolidarExportar,
+				"Inventarios");
+		gestorVentanas.setSelectedComponent(miPanelConsolidarExportar);
+	}
+
 	public void llenarCombo(JComboBox<String> combo) throws SQLException {
 		misFunciones.llenarCombo(combo, miInventariosInicialesDao.consultar());
-		
+
+	}
+
+	public void llenarComboIndividual(JComboBox<String> combo) throws SQLException {
+		misFunciones.llenarCombo(combo, miInventariosNuevosDao.consultar());
 	}
 
 	public void soloNumeros(JTextField campo) {
 		misFunciones.validarSoloNumeros(campo);
 	}
-	
-	public void almacenarArchivo(JLabel progreso, String ruta, String nombre) throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException {
-		miCargarInventario.almacenarArchivo(progreso,ruta,nombre);
+
+	public void almacenarArchivo(JProgressBar pEstado, JLabel progreso, String ruta, String nombre, JLabel lblRuta,
+			Container container, JTextField txtNombre, JButton btnCargar, JButton btnArchivo)
+			throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException {
+		miCargarInventario.almacenarArchivo(pEstado, progreso, ruta, nombre, lblRuta, container, txtNombre, btnCargar,
+				btnArchivo);
 	}
 
 	public void cerrarVentanaSplash() {
@@ -240,12 +340,18 @@ public class Coordinador {
 	public String cargarArchivo() {
 		return miCargarInventario.cargarArchivo();
 	}
-	
+
 	public void iniciarConexion() {
-		if(miConexion == null) {
+		try {
+			if (miConexion.getConnection().isClosed()) {
+				System.err.println("conexion caida");
+				miConexion = new Conexion();
+			}
+		} catch (NullPointerException | SQLException e) {
+			System.err.println("conexion caida");
 			miConexion = new Conexion();
 		}
-		
+
 	}
 
 	public Double StringDouble(String valor) {
@@ -269,7 +375,10 @@ public class Coordinador {
 	}
 
 	public InventarioInicialVo consultar(String codigo, String id) throws SQLException {
-		return miInventariosInicialesDao.consultar(codigo,id);
+		iniciarConexion();
+		iniciarConexionFirebird();
+		codigo = miArticulosDao.consultarArticulo(codigo);
+		return miInventariosInicialesDao.consultar(codigo, id);
 	}
 
 	public String formatoNumero(Double numero, int d) {
@@ -277,55 +386,96 @@ public class Coordinador {
 	}
 
 	public void totalTabla(JTable tabla, JTextField txt) {
-		miCargarInventario.totalTabla(tabla,txt);
-		
+		miCargarInventario.totalTabla(tabla, txt);
+
 	}
 
 	public int validarCodigo(JTable tabla, String codigo) {
-		
+
 		return miCargarInventario.validarCodigo(tabla, codigo);
 	}
 
-	public void guardarInventarioNuevo(JTable tabla,String inventarioInicial) throws SQLException {
-		miRegistrarInventario.guardar(tabla, inventarioInicial);
+	public void guardarInventarioNuevo(JTable tabla, String inventarioInicial, String nombre) throws SQLException {
+		miRegistrarInventario.guardar(tabla, inventarioInicial, nombre);
 	}
 
 	public void cerrarPestaña() {
 		Component pestaña = miVentana.getGestorVentanas().getSelectedComponent();
-		if(miVentana.getGestorVentanas() != null) {
+		if (miVentana.getGestorVentanas() != null) {
 			miVentana.getGestorVentanas().remove(pestaña);
 		}
-		
+
 	}
 
-	public int guardarInventarioNuevo(String idInventarioInicial) throws SQLException {
-		return miInventariosNuevosDao.guardar(idInventarioInicial);
+	public int guardarInventarioNuevo(String idInventarioInicial, String nombre) throws SQLException {
+		return miInventariosNuevosDao.guardar(idInventarioInicial, nombre);
 	}
 
 	public void guardarInventario(InventarioNuevoVo miInventario) throws SQLException {
 		miInventariosNuevosDao.guardar(miInventario);
-		
+
 	}
 
 	public void limpiarTabla(JTable tabla) {
 		misFunciones.limpiarTabla(tabla);
-		
+
 	}
 
-	public String exportar(String inventario,int tipo) throws SQLException, IOException {
-		return miExportarInventario.exportar(inventario,tipo);
+	public String exportar(String inventario, int tipo) throws SQLException, IOException {
+		return miExportarInventario.exportar(inventario, tipo);
 	}
 
 	public ArrayList<InventarioConsolidadoVo> consultar(String idInventarioInicial) throws SQLException {
 		return miInventariosNuevosDao.consultar(idInventarioInicial);
 	}
-//////////////////////licencia 2 dias////////////////////////////////
-	
-	public void licencia() {
-		java.util.Calendar calendario = java.util.Calendar.getInstance();
-		if(calendario.get(java.util.Calendar.DAY_OF_MONTH) > 27) {
-			System.err.println("Error Licencia");
-			System.exit(0);
+
+	public ArrayList<InventarioConsolidadoVo> consultarConsolidar(String idInventarioInicial1,
+			String idInventarioInicial2) throws SQLException {
+		return miInventariosNuevosDao.consultar(idInventarioInicial1, idInventarioInicial2);
+	}
+
+	public void eliminarFila(JTable tabla) {
+		misFunciones.eliminarFila(tabla);
+	}
+
+	public void llenarConsolidado(JTable tabla, String idInventarioIncial) {
+		miRegistrarInventario.llenarConsolidado(tabla, idInventarioIncial);
+	}
+
+	public void llenarIndividual(JTable tabla, String idInventarioNuevo) {
+		miRegistrarInventario.llenarIndividual(tabla, idInventarioNuevo);
+	}
+
+	public ArrayList<InventarioConsolidadoVo> consultarConsolidado(String idInventarioIncial) throws SQLException {
+		return miInventariosNuevosDao.consultar(idInventarioIncial);
+	}
+
+	public String exportar(String inventario1, String inventario2, int tipo) throws SQLException, IOException {
+		return miConsolidarExportar.exportar(inventario1, inventario2, tipo);
+	}
+
+	public ArrayList<InventarioNuevoVo> consultarIndividual(String idInventarioNuevo)
+			throws NumberFormatException, SQLException {
+		return miInventariosNuevosDao.consultar(Integer.valueOf(Integer.parseInt(idInventarioNuevo)));
+	}
+
+	public void iniciarConexionFirebird() {
+		try {
+			if ((miConexionFireBird.getConnection().isClosed()) || (miConexionFireBird.getConnection() == null)) {
+				miConexionFireBird = new ConexionFireBird("clector", "1234");
+			}
+		} catch (Exception e) {
+			miConexionFireBird = new ConexionFireBird("clector", "1234");
 		}
+
+	}
+
+	public ArrayList<InventarioConsolidadoVo> consultarConsolidado(String idInventarioInicial1,
+			String idInventarioInicial2) throws SQLException {
+		return miInventariosNuevosDao.consultar(idInventarioInicial1, idInventarioInicial2);
+	}
+
+	public void habilitarOpciones() {
+		miVentana.habilitarOpciones();
 	}
 }

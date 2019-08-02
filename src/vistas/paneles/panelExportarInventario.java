@@ -38,19 +38,36 @@ public class panelExportarInventario extends JPanel implements ActionListener{
 	
 	private JButton btnExportarSysplus;
 	private JButton btnExportar;
-	
+	private JButton btnConsultarConsolidado;
+	 
 	private Coordinador miCoordinador;
+	
+	private boolean ind = false;
 	
 	public panelExportarInventario(Coordinador miCoordinador) {
 		super();
-		this.miCoordinador = miCoordinador;
-		iniciarComponenetes();
-		try {
-			miCoordinador.llenarCombo(cbxInventarios);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	 	this.miCoordinador = miCoordinador;
+	    iniciarComponenetes();
+	    try {
+	      miCoordinador.llenarCombo(cbxInventarios);
+	    } catch (SQLException e) {
+	      e.printStackTrace();
+	    }
 	}
+	
+	 public panelExportarInventario(boolean modal, Coordinador miCoordinador){
+	    super(modal);
+	    this.miCoordinador = miCoordinador;
+	    iniciarComponenetes();
+	    try {
+	      miCoordinador.llenarComboIndividual(cbxInventarios);
+	      btnExportar.setVisible(false);
+	      btnExportarSysplus.setVisible(false);
+	      ind = true;
+	    } catch (SQLException e) {
+	      e.printStackTrace();
+	    }
+	  }
 	
 	private void iniciarComponenetes() {
 		
@@ -68,7 +85,8 @@ public class panelExportarInventario extends JPanel implements ActionListener{
 		cbxInventarios = new JComboBox<String>();
 		
 		btnExportar = new JButton();
-		btnExportarSysplus = new JButton(); 
+		btnExportarSysplus = new JButton();
+		btnConsultarConsolidado = new JButton();
 		
 		setLayout(new BorderLayout(50,50));
 		{
@@ -112,6 +130,11 @@ public class panelExportarInventario extends JPanel implements ActionListener{
 					btnExportarSysplus.setText("EXPORTAR SYSPLUS");
 					btnExportarSysplus.setPreferredSize(new Dimension(250,60));
 					btnExportarSysplus.addActionListener(this);
+					
+					panelBotones.add(btnConsultarConsolidado);
+				    btnConsultarConsolidado.setText("CONSULTAR");
+				    btnConsultarConsolidado.setPreferredSize(new Dimension(250, 60));
+				    btnConsultarConsolidado.addActionListener(this);
 				}
 			}
 			
@@ -142,6 +165,14 @@ public class panelExportarInventario extends JPanel implements ActionListener{
 				e1.printStackTrace();
 			}
 		}
+		
+		if (e.getSource() == btnConsultarConsolidado){
+	      if (ind) {
+	        miCoordinador.crearPrestañaConsultarIndividual(cbxInventarios.getSelectedItem().toString().split("-"));
+	      } else {
+	        miCoordinador.crearPrestañaConsultarConsolidado(cbxInventarios.getSelectedItem().toString().split("-"));
+	      }
+	    }
 	}
 	
 	

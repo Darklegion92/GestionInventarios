@@ -4,11 +4,15 @@ public class InventarioConsolidadoVo {
 	private Integer id;
 	private Integer idInventarioInicial;
 	private String codigo;
+	private String familia;
+	private String grupo;
+	private String subgrupo;
 	private String descripcion;
 	private Double cantidadInicial;
 	private Double cantidadNueva;
 	private Double cantidadAjustada;
 	private Double costoUnidad;
+	private boolean creado;
 
 	public Double getCantidadInicial() {
 		return cantidadInicial;
@@ -72,6 +76,38 @@ public class InventarioConsolidadoVo {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getFamilia() {
+		return familia;
+	}
+
+	public void setFamilia(String familia) {
+		this.familia = familia;
+	}
+
+	public String getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(String grupo) {
+		this.grupo = grupo;
+	}
+
+	public String getSubgrupo() {
+		return subgrupo;
+	}
+
+	public void setSubgrupo(String subgrupo) {
+		this.subgrupo = subgrupo;
+	}
+
+	public boolean isCreado() {
+		return creado;
+	}
+
+	public void setCreado(boolean creado) {
+		this.creado = creado;
 	}
 
 }

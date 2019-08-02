@@ -1,26 +1,22 @@
 package modelo;
 
+import java.awt.Container;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import controladores.Coordinador;
-import modelo.Vo.InventarioInicialVo;
 
 public class cargarInventario {
 
@@ -50,43 +46,10 @@ public class cargarInventario {
 		}
 
 	}
-
-	@SuppressWarnings("resource")
-	public void almacenarArchivo(JLabel txt, String ruta,String nombre)
-			throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException {
-
-		InputStream excelStream = null;
-
-		excelStream = new FileInputStream(new File(ruta));
-		XSSFWorkbook hssfWorkbook = new XSSFWorkbook(excelStream);
-		XSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
-		XSSFRow fila;
-		
-		int rows = hssfSheet.getLastRowNum();
-
-		int contador = 0;
-
-		DataFormatter df = new DataFormatter();
-		miCoordinador.iniciarConexion();
-		Integer id = miCoordinador.guardarInventario(nombre);
-		for (int f = 1; f < rows; f++) {
-			fila = hssfSheet.getRow(f);
-			InventarioInicialVo inventario = new InventarioInicialVo();
-			if (fila == null) {
-				break;
-			} else {
-				inventario.setBarras(df.formatCellValue(fila.getCell(24)).replaceAll("'", ""));
-				inventario.setCantidad(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(3))));
-				inventario.setCodigo(df.formatCellValue(fila.getCell(0)).replaceAll("'", ""));
-				inventario.setCosto(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(5))));
-				inventario.setDescripcion(df.formatCellValue(fila.getCell(1)).replaceAll("'", ""));
-				inventario.setIdInventarioInicial(id);
-				miCoordinador.guardarInventario(inventario);
-				contador ++;
-			}
-		}
-		hssfWorkbook.close();
-		txt.setText("<html><font size=10><p align='center'>SE HAN REGISTRADO <span>"+contador+"</span></p><p align='center'>ARTÍCULOS EN ESTE INVENTARIO</p></font></html>"); 	
+	
+	public void almacenarArchivo(JProgressBar pEstado, JLabel txt, String ruta, String nombre, JLabel lblRuta, Container container, JTextField txtNombre, JButton btnCargar, JButton btnArchivo) throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException{
+		    progressBar barra = new progressBar(pEstado, miCoordinador, ruta, nombre, txt, lblRuta, container, txtNombre, btnCargar, btnArchivo);
+		    barra.execute();
 	}
 
 	public void totalTabla(JTable tabla, JTextField txt) {

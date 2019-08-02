@@ -5,6 +5,9 @@ public class InventarioInicialVo {
 	private Integer id;
 	private Integer idInventarioInicial;
 	private String codigo;
+	private String familia;
+	private String grupo;
+	private String subgrupo;
 	private String barras;
 	private String descripcion;
 	private Double cantidad;
@@ -67,4 +70,27 @@ public class InventarioInicialVo {
 		this.costo = costo;
 	}
 
+	public String getFamilia() {
+		return familia;
+	}
+
+	public void setFamilia(String familia) {
+		this.familia = familia;
+	}
+
+	public String getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(String grupo) {
+		this.grupo = grupo;
+	}
+
+	public String getSubgrupo() {
+		return subgrupo;
+	}
+
+	public void setSubgrupo(String subgrupo) {
+		this.subgrupo = subgrupo;
+	}
 }

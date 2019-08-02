@@ -146,19 +146,19 @@ public class panelConsolidarExportar extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnExportar) {
-			try {
+			/*try {
 				lblResultado.setText(miCoordinador.exportar(cbxInventarios1.getSelectedItem().toString(),cbxInventarios2.getSelectedItem().toString(),1));
 			} catch (SQLException | IOException e1) {
 				e1.printStackTrace();
-			}
+			}*/
 		}
 		
 		if(e.getSource() == btnExportarSysplus) {
-			try {
+			/*try {
 				lblResultado.setText(miCoordinador.exportar(cbxInventarios1.getSelectedItem().toString(),cbxInventarios2.getSelectedItem().toString(),2));
 			} catch (SQLException | IOException e1) {
 				e1.printStackTrace();
-			}
+			}*/
 		}
 	}
 	

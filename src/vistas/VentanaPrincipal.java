@@ -32,7 +32,9 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 	private JMenuItem itemImportarInventario;
 	private JMenuItem itemNuevoInventario;
 	private JMenuItem itemExportarInventario;
-
+	private JMenuItem itemConsolidarExportar;
+	private JMenuItem itemConsultarIndividual;
+	
 	private JTabbedPane gestorVentanas;
 
 	private Coordinador miCoordinador;
@@ -54,6 +56,8 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 		itemImportarInventario = new JMenuItem();
 		itemNuevoInventario = new JMenuItem();
 		itemExportarInventario = new JMenuItem();
+		itemConsolidarExportar = new JMenuItem();
+		itemConsultarIndividual = new JMenuItem();
 
 		gestorVentanas = new JTabbedPane();
 		
@@ -72,6 +76,7 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 			{
 				barraMenu.add(menuConfiguraciones);
 				menuConfiguraciones.setText("Configuraciones");
+				menuConfiguraciones.setVisible(false);
 				{
 					menuConfiguraciones.add(itemImportarInventario);
 					itemImportarInventario.setText("Importar Inventario");
@@ -88,6 +93,17 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 					menuInventarios.add(itemExportarInventario);
 					itemExportarInventario.setText("Exportar");
 					itemExportarInventario.addActionListener(this);
+					itemExportarInventario.setVisible(false);
+					
+					menuInventarios.add(itemConsolidarExportar);
+					itemConsolidarExportar.setText("Consolidar y Exportar");
+					itemConsolidarExportar.addActionListener(this);
+					itemConsolidarExportar.setVisible(false);
+
+					menuInventarios.add(itemConsultarIndividual);
+					itemConsultarIndividual.setText("Consultar Individual");
+					itemConsultarIndividual.addActionListener(this);
+					itemConsultarIndividual.setVisible(false);
 				}
 			}
 		}
@@ -151,6 +167,12 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 		if(e.getSource() == itemExportarInventario) {
 			miCoordinador.crearPestanaExportarInventario(gestorVentanas);
 		}
+		if (e.getSource() == itemConsolidarExportar) {
+			miCoordinador.crearPestanaConsolidarExportar(gestorVentanas);
+		}
+		if (e.getSource() == itemConsultarIndividual) {
+			miCoordinador.crearPestanaExportarInventarioInd(gestorVentanas);
+		}
 
 	}
 	
@@ -177,6 +199,13 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 
 	public void setGestorVentanas(JTabbedPane gestorVentanas) {
 		this.gestorVentanas = gestorVentanas;
+	}
+	
+	public void habilitarOpciones() {
+		menuConfiguraciones.setVisible(true);
+		itemConsolidarExportar.setVisible(true);
+		itemExportarInventario.setVisible(true);
+		itemConsultarIndividual.setVisible(true);
 	}
 
 }

@@ -54,7 +54,7 @@ public class InventariosInicialesDao {
 		PreparedStatement statement = null;
 		ResultSet resultado = null;
 		connection = miconexion.getConnection();
-		String consulta = "SELECT * FROM inventariosinciales ORDER BY id DESC";
+		String consulta = "SELECT * FROM inventariosiniciales ORDER BY id DESC";
 		statement = connection.prepareStatement(consulta);
 		resultado = statement.executeQuery();
 		ArrayList<InventarioInicialVo> array = new ArrayList<InventarioInicialVo>(); 

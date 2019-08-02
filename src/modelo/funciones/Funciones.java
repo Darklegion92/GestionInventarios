@@ -419,4 +419,10 @@ public class Funciones {
 		modelo.setRowCount(0);
 		
 	}
+	
+	 public void eliminarFila(JTable tabla){
+	    DefaultTableModel modelo = (DefaultTableModel)tabla.getModel();
+	    modelo.removeRow(tabla.getSelectedRow());
+	  }
+	  
 }

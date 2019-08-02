@@ -9,16 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-
-import org.apache.poi.EncryptedDocumentException;
 
 import controladores.Coordinador;
 
@@ -50,16 +47,15 @@ public class panelCargarInventario extends JPanel implements ActionListener, Key
 
 	private JTextField txtNombre;
 
+	 private JProgressBar pEstado;
+	
 	private Coordinador miCoordinador;
 
-	private JTabbedPane gestorVentanas;
-
-	public panelCargarInventario(Coordinador miCoordinador, JTabbedPane gestorVentanas) {
+	 public panelCargarInventario(Coordinador miCoordinador){
 		super();
-		this.miCoordinador = miCoordinador;
-		this.gestorVentanas = gestorVentanas;
-		iniciarComponentes();
-	}
+	    this.miCoordinador = miCoordinador;
+	    iniciarComponentes();
+	  }
 
 	private void iniciarComponentes() {
 
@@ -84,6 +80,8 @@ public class panelCargarInventario extends JPanel implements ActionListener, Key
 		btnCargar = new JButton();
 
 		txtNombre = new JTextField();
+		
+		pEstado = new JProgressBar();
 
 		setLayout(new BorderLayout());
 		{
@@ -120,7 +118,7 @@ public class panelCargarInventario extends JPanel implements ActionListener, Key
 						lblNombreRuta.setText("Localización del Archivo: ");
 
 						panelRuta.add(lblRuta, BorderLayout.CENTER);
-						lblRuta.setPreferredSize(new Dimension(350, 20));
+						lblRuta.setPreferredSize(new Dimension(150, 20));
 					
 					}
 
@@ -152,9 +150,12 @@ public class panelCargarInventario extends JPanel implements ActionListener, Key
 				panelCentro.add(panelCentroCentro);
 				panelCentroCentro.setLayout(new FlowLayout(1, 500, 100));
 				{
-					panelCentroCentro.add(lblProgreso, BorderLayout.CENTER);
-					lblProgreso.setPreferredSize(new Dimension(500,200));
-					lblProgreso.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+					panelCentroCentro.add(pEstado, "Center");
+				    pEstado.setPreferredSize(new Dimension(400, 50));
+				    
+				    panelCentroCentro.add(lblProgreso, "Center");
+				    lblProgreso.setPreferredSize(new Dimension(500, 100));
+				    lblProgreso.setHorizontalAlignment(0);
 
 				}
 			}
@@ -178,26 +179,19 @@ public class panelCargarInventario extends JPanel implements ActionListener, Key
 
 		if (e.getSource() == btnCargar) {
 			if (txtNombre.getText().isEmpty()) {
-				miCoordinador.AlertaError("El Campo Nombre", "No Puede Estar Vacío");
-				txtNombre.requestFocus();
-			} else {
-				if (miCoordinador.AlertaConfirmar("Esta Seguro Que Desea", "Crear Inventario ")) {
-
-					try {
-						this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-						miCoordinador.almacenarArchivo(lblProgreso, lblRuta.getText(),txtNombre.getText());
-						this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-						txtNombre.setText("");
-						lblRuta.setText("");
-						btnCargar.setEnabled(false);
-						
-					} catch (EncryptedDocumentException | IOException | SQLException e1) {
-						e1.printStackTrace();
-					}
-					
-				}
-			}
-		}
+		        miCoordinador.AlertaError("El Campo Nombre", "No Puede Estar VacÃ­o");
+		        txtNombre.requestFocus();
+		      }
+		      else if (miCoordinador.AlertaConfirmar("Esta Seguro Que Desea", "Crear Inventario ")){
+		        try {
+		          miCoordinador.almacenarArchivo(pEstado, lblProgreso, lblRuta.getText(), txtNombre.getText(), lblRuta, this, txtNombre, btnCargar, btnArchivo);
+		        }
+		        catch (Exception e1){
+		          JOptionPane.showMessageDialog(this, e1.getMessage());
+		          setCursor(new Cursor(0));
+		        }
+		      }
+		    }
 
 	}
 	

@@ -50,7 +50,6 @@ public class VentanaSplash extends JDialog {
 						Thread.sleep(100);
 
 					}
-					miCoordinador.licencia();
 					miCoordinador.cerrarVentanaSplash();
 				} catch (Exception e) {
 					System.out.print("Exepcion " + e.getMessage());
