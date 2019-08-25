@@ -97,6 +97,7 @@ public class InventariosInicialesDao {
 			inventario.setSubgrupo(resultado.getString("subgrupo"));
 			inventario.setId(resultado.getInt("id"));
 			inventario.setIdInventarioInicial(resultado.getInt("idInventarioInicial"));
+			System.out.println("Articulo Encontrado localmente");
 		}
 		return inventario;
 	}

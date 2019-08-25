@@ -27,6 +27,7 @@ public class ArticulosDao {
 			resultado = statement.executeQuery();
 			if (resultado.next()) {
 				res = resultado.getString("codigo");
+				System.out.println("Articulo Encontrado");
 			}
 		return res;	
 	}

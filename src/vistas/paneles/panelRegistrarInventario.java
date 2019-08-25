@@ -333,7 +333,8 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 				try {
 					miInventario = new InventarioInicialVo();
 					miInventario = miCoordinador.consultar(txtCodigo.getText(), id[0]);
-					if (!miInventario.getBarras().isEmpty()) {
+					if (!miInventario.getCodigo().isEmpty()) {
+						System.err.println("se encontro");
 						txtDescripcion.setEditable(false);
 						txtCodigo.setText(miInventario.getCodigo());
 						txtBarras.setText(miInventario.getBarras());
@@ -342,8 +343,8 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 						familia = miInventario.getFamilia();
 						grupo = miInventario.getGrupo();
 						subgrupo = miInventario.getSubgrupo();
-						if (miInventario.getCosto().doubleValue() < 0.0D) {
-							miInventario.setCosto(Double.valueOf(0.0D));
+						if (miInventario.getCosto() < 0.0) {
+							miInventario.setCosto(0.0);
 						}
 						txtCosto.setText(miCoordinador.formatoNumero(miInventario.getCosto(), 2));
 						txtCantidad.setEditable(true);
@@ -353,15 +354,15 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 					} else {
 						txtDescripcion.setEditable(true);
 						txtDescripcion.requestFocus();
-						miInventario.setCosto(Double.valueOf(0.0D));
-						miInventario.setCantidad(Double.valueOf(0.0D));
+						miInventario.setCosto(Double.valueOf(0.0));
+						miInventario.setCantidad(Double.valueOf(0.0));
 					}
 				} catch (NullPointerException e1) {
 					miCoordinador.AlertaError("Artículo " + txtCodigo.getText(), "No Existe, Digite Una Descripción");
 					txtDescripcion.setEditable(true);
 					txtDescripcion.requestFocus();
-					miInventario.setCosto(Double.valueOf(0.0D));
-					miInventario.setCantidad(Double.valueOf(0.0D));
+					miInventario.setCosto(Double.valueOf(0.0));
+					miInventario.setCantidad(Double.valueOf(0.0));
 					familia = "SIN FAMILIA";
 					grupo = "SIN GRUPO";
 					subgrupo = "SIN SUBGRUPO";
