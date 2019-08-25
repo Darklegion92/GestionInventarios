@@ -318,6 +318,11 @@ public class Funciones {
 	 * @return
 	 */
 	public Double StringADouble(String valor) {
+		
+		if(valor=="") {
+			valor="0";
+		}
+		
 		valor = valor.replace("$", "");
 		//valor = valor.replace(",", "");
 		Double dato;

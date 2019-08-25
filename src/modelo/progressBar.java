@@ -82,7 +82,11 @@ public class progressBar extends SwingWorker<Integer, String>{
 			miCoordinador.iniciarConexion();
 			miCoordinador.iniciarTransaccion();
 			Integer id = miCoordinador.guardarInventario(nombre);
+			try {
+				
+			
 			for (int f = 1; f < rows; f++) {
+				
 				fila = hssfSheet.getRow(f);
 				final int c = f+1;
 				getJprogress().setValue(c);
@@ -90,19 +94,22 @@ public class progressBar extends SwingWorker<Integer, String>{
 				if (fila == null) {
 					break;
 				} else {
-					inventario.setBarras(df.formatCellValue(fila.getCell(24)).replaceAll("'", ""));
+					inventario.setBarras(df.formatCellValue(fila.getCell(27)).replaceAll("'", ""));
 					inventario.setCantidad(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(3))));
 					inventario.setCodigo(df.formatCellValue(fila.getCell(0)).replaceAll("'", ""));
 					inventario.setCosto(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(5))));
 					inventario.setDescripcion(df.formatCellValue(fila.getCell(1)).replaceAll("'", ""));
 					inventario.setIdInventarioInicial(id);
-					inventario.setFamilia(df.formatCellValue(fila.getCell(27)).replaceAll("'", ""));
-					inventario.setGrupo(df.formatCellValue(fila.getCell(28)).replaceAll("'", ""));
-					inventario.setSubgrupo(df.formatCellValue(fila.getCell(29)).replaceAll("'", ""));
+					inventario.setFamilia(df.formatCellValue(fila.getCell(29)).replaceAll("'", ""));
+					inventario.setGrupo(df.formatCellValue(fila.getCell(30)).replaceAll("'", ""));
+					inventario.setSubgrupo(df.formatCellValue(fila.getCell(31)).replaceAll("'", ""));
 					miCoordinador.guardarInventario(inventario);
 					contador ++;
 				}
 				
+			}
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
 			miCoordinador.committ();
 			hssfWorkbook.close();

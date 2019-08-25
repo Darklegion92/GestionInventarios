@@ -48,8 +48,14 @@ public class cargarInventario {
 	}
 	
 	public void almacenarArchivo(JProgressBar pEstado, JLabel txt, String ruta, String nombre, JLabel lblRuta, Container container, JTextField txtNombre, JButton btnCargar, JButton btnArchivo) throws EncryptedDocumentException, FileNotFoundException, IOException, SQLException{
-		    progressBar barra = new progressBar(pEstado, miCoordinador, ruta, nombre, txt, lblRuta, container, txtNombre, btnCargar, btnArchivo);
-		    barra.execute();
+		try {
+			progressBar barra = new progressBar(pEstado, miCoordinador, ruta, nombre, txt, lblRuta, container, txtNombre, btnCargar, btnArchivo);
+			barra.execute();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	public void totalTabla(JTable tabla, JTextField txt) {
