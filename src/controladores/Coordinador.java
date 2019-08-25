@@ -469,10 +469,10 @@ public class Coordinador {
 	public void iniciarConexionFirebird() {
 		try {
 			if ((miConexionFireBird.getConnection().isClosed()) || (miConexionFireBird.getConnection() == null)) {
-				miConexionFireBird = new ConexionFireBird("CLECTOR", "1234");
+				miConexionFireBird = new ConexionFireBird("sysdba", "masterkey");
 			}
 		} catch (Exception e) {
-			miConexionFireBird = new ConexionFireBird("CLECTOR", "1234");
+			miConexionFireBird = new ConexionFireBird("sysdba", "masterkey");
 		}
 
 	}

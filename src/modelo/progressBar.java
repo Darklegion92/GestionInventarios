@@ -94,7 +94,7 @@ public class progressBar extends SwingWorker<Integer, String>{
 				if (fila == null) {
 					break;
 				} else {
-					inventario.setBarras(df.formatCellValue(fila.getCell(27)).replaceAll("'", ""));
+					inventario.setBarras(df.formatCellValue(fila.getCell(25)).replaceAll("'", ""));
 					inventario.setCantidad(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(3))));
 					inventario.setCodigo(df.formatCellValue(fila.getCell(0)).replaceAll("'", ""));
 					inventario.setCosto(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(5))));
