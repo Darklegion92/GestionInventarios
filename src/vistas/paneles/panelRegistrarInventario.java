@@ -10,7 +10,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,6 +27,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import controladores.Coordinador;
+import modelo.Vo.Datos;
 import modelo.Vo.InventarioInicialVo;
 import modelo.conexiones.ConexionFireBird;
 import recursos.componentes.modeloTablasEditable;
@@ -97,6 +100,11 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 		iniciarComponentes();
 		try {
 			miCoordinador.llenarCombo(cbxInventarioIncial);
+			ArrayList<Datos> misDatos = miCoordinador.cargarDatos("registro.config");
+			if(misDatos != null) {
+				if(miCoordinador.AlertaConfirmar("Hay Datos Guardados", "Desea Cargarlos"))
+					cargarDatos(misDatos);
+			}
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
@@ -334,7 +342,6 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 					miInventario = new InventarioInicialVo();
 					miInventario = miCoordinador.consultar(txtCodigo.getText(), id[0]);
 					if (!miInventario.getCodigo().isEmpty()) {
-						System.err.println("se encontro");
 						txtDescripcion.setEditable(false);
 						txtCodigo.setText(miInventario.getCodigo());
 						txtBarras.setText(miInventario.getBarras());
@@ -375,7 +382,6 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 		}
 		if ((e.getSource() == txtCantidad) && (e.getKeyCode() == KeyEvent.VK_ENTER)) {
 			int i = miCoordinador.validarCodigo(tabla, txtCodigo.getText());
-			System.err.println(i);
 			if (i >= 1) {
 				sumarDato(i);
 			} else {
@@ -443,7 +449,8 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 					miCoordinador.AlertaCorrecto("Inventario", "Guardado Correctamente");
 					miCoordinador.limpiarTabla(tabla);
 					cbxInventarioIncial.setEnabled(true);
-				} catch (SQLException e1) {
+					miCoordinador.limpiarArchivoPlano("registro.config");
+				} catch (SQLException | IOException e1) {
 					e1.printStackTrace();
 					miCoordinador.iniciarConexion();
 				}
@@ -481,7 +488,38 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 			      familia, 
 			      grupo, 
 			      subgrupo });
+		 Datos miDato = new Datos();
+		 miDato.setCodigo(txtCodigo.getText()); 
+	     miDato.setDescripcion(txtDescripcion.getText()); 
+	     miDato.setInvInicial(miInventario.getCantidad()); 
+	     miDato.setInvNuevo(miCoordinador.StringDouble(txtCantidad.getText())); 
+	     miDato.setAjusteTotal(ajuste); 
+	     miDato.setCostoUnidad(miInventario.getCosto()); 
+	     miDato.setTotal(Double.valueOf(miInventario.getCosto().doubleValue() * ajuste.doubleValue())); 
+	     miDato.setCreado(Boolean.valueOf(crear)); 
+	     miDato.setFamilia(familia); 
+	     miDato.setGrupo(grupo);
+	     miDato.setSubgrupo(subgrupo);
+		 miCoordinador.agregarTemporal(miDato,"registro.config");
 		estadoIncial();
+	}
+	
+	private void cargarDatos(ArrayList<Datos> misDatos) {
+		for(Datos dato: misDatos) {
+		 modelo = (DefaultTableModel) tabla.getModel();
+		 modelo.addRow(new Object[] {
+			      dato.getCodigo(), 
+			      dato.getDescripcion(), 
+			      dato.getInvInicial(), 
+			      dato.getInvNuevo(), 
+			      dato.getAjusteTotal(), 
+			      dato.getCostoUnidad(), 
+			      dato.getTotal(),
+			      dato.getCreado(), 
+			      dato.getFamilia(), 
+			      dato.getGrupo(), 
+			      dato.getSubgrupo() });
+		}
 	}
 
 	private void estadoIncial() {

@@ -27,6 +27,7 @@ import modelo.registrarInventario;
 import modelo.Dao.ArticulosDao;
 import modelo.Dao.InventariosInicialesDao;
 import modelo.Dao.InventariosNuevosDao;
+import modelo.Vo.Datos;
 import modelo.Vo.InventarioConsolidadoVo;
 import modelo.Vo.InventarioInicialVo;
 import modelo.Vo.InventarioNuevoVo;
@@ -515,4 +516,20 @@ public class Coordinador {
 			e.printStackTrace();
 		}		
 	}
+
+	public void agregarTemporal(Datos datos,String archivo) {
+		
+		misFunciones.grabarDatos(datos, archivo);
+	}
+
+	public ArrayList<Datos> cargarDatos(String nombre) {
+		return misFunciones.leerDatos(nombre);
+	}
+
+	public void limpiarArchivoPlano(String nombre) throws IOException {
+		misFunciones.eliminarContenido(nombre);
+		
+	}
+	
+	
 }
