@@ -101,7 +101,7 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 		try {
 			miCoordinador.llenarCombo(cbxInventarioIncial);
 			ArrayList<Datos> misDatos = miCoordinador.cargarDatos("registro.config");
-			if(misDatos != null) {
+			if(misDatos.size()>0) {
 				if(miCoordinador.AlertaConfirmar("Hay Datos Guardados", "Desea Cargarlos"))
 					cargarDatos(misDatos);
 			}
@@ -467,9 +467,32 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 		if ((e.getSource() == btnEliminar)
 				&& (miCoordinador.AlertaConfirmar("Eliminara codigo " + tabla.getValueAt(tabla.getSelectedRow(), 0),
 						"¿Estas Seguro?"))) {
+			eliminarRegistroLocal(tabla);
 			miCoordinador.eliminarFila(tabla);
 		}
 
+	}
+	
+	
+
+	private void eliminarRegistroLocal(JTable tabla) {
+		String codigo = tabla.getValueAt(tabla.getSelectedRow(), 0).toString();
+		Double cantidad = miCoordinador.StringDouble(tabla.getValueAt(tabla.getSelectedRow(), 3).toString());
+		ArrayList<Datos> misDatos = miCoordinador.cargarDatos("registro.config");
+		
+		for(int i = 0;i<misDatos.size();i++) {
+			try {
+				miCoordinador.limpiarArchivoPlano("registro.config");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(misDatos.get(i).getCodigo() == codigo) {
+				if(misDatos.get(i).getInvNuevo() == cantidad) {
+					misDatos.remove(i);
+					break;
+				}
+			}
+		}
 	}
 
 	private void agregarTabla() {
@@ -555,7 +578,9 @@ public class panelRegistrarInventario extends JPanel implements KeyListener, Act
 	      subgrupo = tabla.getValueAt(row, 10).toString();
 	      txtCodigo.setEditable(false);
 	      txtCantidad.setEditable(true);
+	      eliminarRegistroLocal(tabla);
 	      miCoordinador.eliminarFila(tabla);
+	      
 		}
 			    
 

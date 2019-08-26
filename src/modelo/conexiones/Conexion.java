@@ -7,7 +7,7 @@ public class Conexion {
 	private String nombreBd = "inventariossfc";
 	private String usuario = "domicilios";
 	private String password = "Domicilios83731";
-	private String url = "jdbc:mysql://localhost:3306/" + nombreBd;
+	private String url = "jdbc:mysql://192.168.1.101:3306/" + nombreBd;
 	
 	 
 
@@ -15,9 +15,9 @@ public class Conexion {
 
 	public Conexion() { // generamos el constructor de la clase
 			
-		 usuario = "root";
+		/* usuario = "root";
 		 password = "1234";
-		 url = "jdbc:mysql://localhost:3306/" + nombreBd;
+		 url = "jdbc:mysql://localhost:3306/" + nombreBd;*/
 		try {
 			//obtener el driver
 			Class.forName("com.mysql.jdbc.Driver"); // java busca este conector

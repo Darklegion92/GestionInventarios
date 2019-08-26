@@ -4,8 +4,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionFireBird {
-    //String URL = "jdbc:firebirdsql:192.168.5.202/3050:D:/sysplus/Datos/LIB/sysplus.fdb?lc_ctype=ISO8859_1";
-    String URL = "jdbc:firebirdsql:localhost/3050:d:/firebird/sysplus.fdb?lc_ctype=ISO8859_1";
+    String URL = "jdbc:firebirdsql:192.168.5.202/3050:D:/sysplus/Datos/LIB/sysplus.fdb?lc_ctype=ISO8859_1";
+    //String URL = "jdbc:firebirdsql:localhost/3050:d:/firebird/sysplus.fdb?lc_ctype=ISO8859_1";
     String Usuario = "SYSDBA";
     String Contraseña = "masterkey";
     String Driver = "org.firebirdsql.jdbc.FBDriver";
