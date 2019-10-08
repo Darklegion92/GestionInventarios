@@ -35,6 +35,16 @@ public class InventariosInicialesDao {
 		return 0;
 	}
 	
+	public void LimpiarDataBase() throws SQLException {
+		Connection connection = null; 
+		Conexion miconexion = miCoordinador.getMiConexion();
+		PreparedStatement statement = null;
+		connection = miconexion.getConnection();
+		String consulta = "CALL `limpiarDB`();";
+		statement = connection.prepareStatement(consulta);
+		statement.execute();
+	}
+	
 	public void guardar(InventarioInicialVo invInicial) throws SQLException {
 		
 		Connection connection = null; 
@@ -109,6 +119,8 @@ public class InventariosInicialesDao {
 	public void setMiCoordinador(Coordinador miCoordinador) {
 		this.miCoordinador = miCoordinador;
 	}
+
+	
 
 	
 

@@ -15,7 +15,7 @@ public class Conexion {
 
 	public Conexion() { // generamos el constructor de la clase
 			
-		/* usuario = "root";
+		/*usuario = "root";
 		 password = "1234";
 		 url = "jdbc:mysql://localhost:3306/" + nombreBd;*/
 		try {

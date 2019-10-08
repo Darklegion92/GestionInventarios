@@ -530,6 +530,11 @@ public class Coordinador {
 		misFunciones.eliminarContenido(nombre);
 		
 	}
+
+	public void limpiarDataBase() throws SQLException {
+		
+		miInventariosInicialesDao.LimpiarDataBase();
+	}
 	
 	
 }

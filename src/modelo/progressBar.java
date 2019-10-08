@@ -100,9 +100,9 @@ public class progressBar extends SwingWorker<Integer, String>{
 					inventario.setCosto(miCoordinador.StringDouble(df.formatCellValue(fila.getCell(5))));
 					inventario.setDescripcion(df.formatCellValue(fila.getCell(1)).replaceAll("'", ""));
 					inventario.setIdInventarioInicial(id);
-					inventario.setFamilia(df.formatCellValue(fila.getCell(29)).replaceAll("'", ""));
-					inventario.setGrupo(df.formatCellValue(fila.getCell(30)).replaceAll("'", ""));
-					inventario.setSubgrupo(df.formatCellValue(fila.getCell(31)).replaceAll("'", ""));
+					inventario.setFamilia(df.formatCellValue(fila.getCell(28)).replaceAll("'", ""));
+					inventario.setGrupo(df.formatCellValue(fila.getCell(29)).replaceAll("'", ""));
+					inventario.setSubgrupo(df.formatCellValue(fila.getCell(30)).replaceAll("'", ""));
 					miCoordinador.guardarInventario(inventario);
 					contador ++;
 				}

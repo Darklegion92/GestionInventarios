@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -23,6 +25,7 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 	 * 
 	 */
 	private static final long serialVersionUID = -3980504299387481751L;
+	private static final String version = "V. 4.0 2019-10-08";
 	
 
 	private JMenuBar barraMenu;
@@ -34,6 +37,9 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 	private JMenuItem itemExportarInventario;
 	private JMenuItem itemConsolidarExportar;
 	private JMenuItem itemConsultarIndividual;
+	private JMenuItem itemLimpiarBD;
+	
+	private JLabel lblVersion;
 	
 	private JTabbedPane gestorVentanas;
 
@@ -58,6 +64,9 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 		itemExportarInventario = new JMenuItem();
 		itemConsolidarExportar = new JMenuItem();
 		itemConsultarIndividual = new JMenuItem();
+		itemLimpiarBD = new JMenuItem();
+		
+		lblVersion = new JLabel();
 
 		gestorVentanas = new JTabbedPane();
 		
@@ -81,6 +90,10 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 					menuConfiguraciones.add(itemImportarInventario);
 					itemImportarInventario.setText("Importar Inventario");
 					itemImportarInventario.addActionListener(this);
+					
+					menuConfiguraciones.add(itemLimpiarBD);
+					itemLimpiarBD.setText("Eliminar Datos");
+					itemLimpiarBD.addActionListener(this);
 				}
 
 				barraMenu.add(menuInventarios);
@@ -105,6 +118,8 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 					itemConsultarIndividual.addActionListener(this);
 					itemConsultarIndividual.setVisible(false);
 				}
+				barraMenu.add(lblVersion);
+				lblVersion.setText("                                                           "+version);
 			}
 		}
 		add(gestorVentanas);		
@@ -172,6 +187,17 @@ public class VentanaPrincipal extends JFrame implements WindowListener, ActionLi
 		}
 		if (e.getSource() == itemConsultarIndividual) {
 			miCoordinador.crearPestanaExportarInventarioInd(gestorVentanas);
+		}
+		
+		if (e.getSource() == itemLimpiarBD) {
+			
+			if(miCoordinador.AlertaConfirmar("Esta Seguro Que Desea", "ELIMINAR TODO")) {
+				try {
+					miCoordinador.limpiarDataBase();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
 		}
 
 	}
